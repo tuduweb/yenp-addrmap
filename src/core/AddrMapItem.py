@@ -31,6 +31,61 @@ class AddrMapLabelEnum(enum.Enum):
 class AddrMapWrapCfg(object):
     pass
 
+class AddrMapRegItemDefines(object):
+    item_label: AddrMapLabelEnum
+    item_label_idx: int
+    start_bit: int
+    end_bit  : int
+
+    def __init__(self, label:AddrMapLabelEnum, labelIdx: int, start_bit: int, end_bit:int) -> None:
+        pass
+
+    @staticmethod
+    def MakeDefines():
+        defineLists = [
+            [
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_CS, 0, 0, 4),
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_CS, 1, 8, 12),
+            ],
+            [
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_BA, 0, 0, 5),
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_BA, 1, 8, 13),
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_BA, 2, 16, 21),
+            ],
+            [
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 2, 0, 3),
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 3, 8, 12),
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 4, 16, 19),
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 5, 24, 27),
+            ],
+            [
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 6, 0, 4),
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 7, 8, 12),
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 8, 16, 20),
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 9, 24, 28),
+            ],
+            [
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 10, 0, 4),
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 11, 8, 12),
+                # AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 8, 16, 20),
+                # AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 9, 24, 28),
+            ],
+            [
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_ROW, 0, 0, 3),
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_ROW, 1, 8, 11),
+                ### addrmap_row_b2_10 -> not support!
+
+                AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_ROW, 11, 24, 27),
+                # AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 8, 16, 20),
+                # AddrMapRegItemDefines(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 9, 24, 28),
+            ],
+        ]
+        
+
+        for idx, defineList in enumerate(defineLists):
+            print(idx, defineList)
+
+
 class AddrMapItemCfg(object):
     item_label: AddrMapLabelEnum
     item_label_idx: int
@@ -49,8 +104,9 @@ class AddrMapItemCfg(object):
         return name
     def SetOffset(self, cfg_offset: int):
         self.cfg_offset = cfg_offset
-    
-    def GetBasePosition(self, label:AddrMapLabelEnum, labelIdx: int) -> int:
+
+    @staticmethod
+    def GetBasePosition(label:AddrMapLabelEnum, labelIdx: int) -> int:
         labelBasePosition = 0
 
         if (label == AddrMapLabelEnum.ADDRMAP_LABEL_ROW):
@@ -65,6 +121,10 @@ class AddrMapItemCfg(object):
             labelBasePosition = labelIdx + 0
         
         return labelBasePosition
+
+    @staticmethod
+    def MakeAddrMapItemCfg(label:AddrMapLabelEnum, labelIdx: int):
+        pass
 
     pass
 
@@ -210,3 +270,6 @@ if __name__ == "__main__":
 
     settings_adapter = AddrMapSettingsAdapter()
     settings_adapter.ConvertAddrMapSettings("")
+
+
+    AddrMapRegItemDefines.MakeDefines()
