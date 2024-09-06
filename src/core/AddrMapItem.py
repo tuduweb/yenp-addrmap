@@ -168,6 +168,8 @@ class AddrMapWrap(object):
         AddrMapLabelEnum.ADDRMAP_LABEL_COL: list(range(0, 10)),
     }
 
+    bit_reserved_map: list
+
     def CheckMapSettingsValid(self, map_settings: dict) -> bool:
         # combines all settings childs
         bit_map_list = []
@@ -185,22 +187,37 @@ class AddrMapWrap(object):
 
         self.CheckMapSettingsValid(self.addr_map_settings)
 
-        c0_item = AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 0)
-        c1_item = AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 1)
-        c1_item = AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 2)
-        cs0_item = AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_CS, 0)
-        cs1_item = AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_CS, 1)
+        # c0_item = AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 0)
+        # c1_item = AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 1)
+        # c1_item = AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_COL, 2)
+        # cs0_item = AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_CS, 0)
+        # cs1_item = AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_CS, 1)
 
-        column_items = [AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_COL, idx) for idx in range(0, 9)]
-        row_items    = [AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_ROW, idx) for idx in range(0, 16)]
-        ba_items     = [AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_BA , idx) for idx in range(0, 1)]
-        bg_items     = [AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_BG , idx) for idx in range(0, 1)]
-        cs_items     = [AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_CS , idx) for idx in range(0, 1)]
+        # column_items = [AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_COL, idx) for idx in range(0, 9)]
+        # row_items    = [AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_ROW, idx) for idx in range(0, 16)]
+        # ba_items     = [AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_BA , idx) for idx in range(0, 1)]
+        # bg_items     = [AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_BG , idx) for idx in range(0, 1)]
+        # cs_items     = [AddrMapItem(AddrMapLabelEnum.ADDRMAP_LABEL_CS , idx) for idx in range(0, 1)]
 
-        print(column_items)
+        # print(column_items)
 
-        self.addr_map.append(c0_item)
-        self.addr_map.append(cs0_item)
+        # self.addr_map.append(c0_item)
+        # self.addr_map.append(cs0_item)
+
+        print(self.addr_map_settings)
+
+        bit_reserved_map = [[] for _ in range(32)]
+
+        for map_list_name, map_list in self.addr_map_settings.items():
+            for idx, bit_pos in enumerate(map_list):
+                print("%0s_%0d" % (map_list_name, idx), bit_pos)
+                if idx >= 32:
+                    print("invalid idx=%0d" % idx)
+                    continue
+                bit_reserved_map[bit_pos].append("%0s_%0d" % (map_list_name, idx))
+        
+        for idx, bit_list in enumerate(bit_reserved_map):
+            print(idx, bit_list)
 
 
     def ParseAddr(self, addr: int):
@@ -322,12 +339,15 @@ if __name__ == "__main__":
 
     print("hello world")
 
-    ### SoC_ADDR -> HIF_ADDR
-    addr_map_wrap = AddrMapWrap()
-    addr_map_wrap.ParseAddr(int("0x8000_0000", 16))
 
-    settings_adapter = AddrMapSettingsAdapter()
-    settings_adapter.ConvertAddrMapSettings("")
+
+    # settings_adapter = AddrMapSettingsAdapter()
+    # settings_adapter.ConvertAddrMapSettings("")
 
 
     AddrMapRegItemDefines.MakeDefines()
+
+    ### SoC_ADDR -> HIF_ADDR
+    addr_map_wrap = AddrMapWrap()
+    addr_map_wrap.ParseAddr(int("0x8000_0000", 16))
+    # addr_map_wrap.ParseAddr(int("0x8000_0020", 16))
