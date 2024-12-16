@@ -91,6 +91,7 @@ class AddrMapItemCfg(object):
     item_label_idx: int
     cfg_offset  = 0
     base_position = 0
+    # rst offset posion -> index
     offset_position = 10
 
     def __init__(self, label:AddrMapLabelEnum, labelIdx: int, default_offset: int = 0) -> None:
@@ -98,7 +99,7 @@ class AddrMapItemCfg(object):
         self.item_label_idx = labelIdx
         self.base_position = self.GetBasePosition(label, labelIdx)
     def __str__(self) -> str:
-        name = self.item_label.name#.replace("ADDRMAP_LABEL_", "") #self.value
+        name = self.item_label.name + "_" + str(self.item_label_idx) #.replace("ADDRMAP_LABEL_", "") #self.value
         # translation_table = str.maketrans(self._map_rename)
         # return name.translate(translation_table, 1)
         return name
@@ -257,6 +258,8 @@ class AddrMapSettingsAdapter(object):
         int_value = StrCoverter.StrCoverter("h1000_0000")[1]
 
         print(int_value, hex(int_value), hex(int_value)[2:4])
+        print("hex_slice", get_bits(hex(int_value), 28, 28))
+        print("hex_slice", get_bits(hex(int_value), 29, 29))
         print("hex_slice", get_bits(hex(int_value), 0, 31))
 
     pass
@@ -273,3 +276,29 @@ if __name__ == "__main__":
 
 
     AddrMapRegItemDefines.MakeDefines()
+
+    addrmap_cfg_settings = [
+        [AddrMapItemCfg(AddrMapLabelEnum.ADDRMAP_LABEL_CS, idx) for idx in range(0,1)],
+        [AddrMapItemCfg(AddrMapLabelEnum.ADDRMAP_LABEL_BA, idx) for idx in range(0,2)],
+        [AddrMapItemCfg(AddrMapLabelEnum.ADDRMAP_LABEL_COL, idx) for idx in range(2,5)],
+        [AddrMapItemCfg(AddrMapLabelEnum.ADDRMAP_LABEL_COL, idx) for idx in range(6,9)],
+        [AddrMapItemCfg(AddrMapLabelEnum.ADDRMAP_LABEL_COL, idx) for idx in range(10,11)],
+        [AddrMapItemCfg(AddrMapLabelEnum.ADDRMAP_LABEL_COL, idx) for idx in range(0,11)],
+        [AddrMapItemCfg(AddrMapLabelEnum.ADDRMAP_LABEL_COL, idx) for idx in range(12,15)],
+    ]
+
+    # for list_item in addrmap_cfg_settings
+
+    addrmap_test_settings = [
+        [AddrMapItemCfg(AddrMapLabelEnum.ADDRMAP_LABEL_CS, idx) for idx in range(0,1)],
+        [AddrMapItemCfg(AddrMapLabelEnum.ADDRMAP_LABEL_BG, idx) for idx in range(0,1+1)],
+        [AddrMapItemCfg(AddrMapLabelEnum.ADDRMAP_LABEL_BA, idx) for idx in range(0,1+1)],
+        [AddrMapItemCfg(AddrMapLabelEnum.ADDRMAP_LABEL_ROW, idx) for idx in range(0,16+1)],
+        [AddrMapItemCfg(AddrMapLabelEnum.ADDRMAP_LABEL_COL, idx) for idx in range(0,9+1)],
+    ]
+
+    flat_list_with_index = [(idx, item) for sublist in addrmap_test_settings[::-1] for idx, item in enumerate(sublist)]
+
+    for idx, flat_item in enumerate(flat_list_with_index):
+        _, value = flat_item
+        print(idx, value)
